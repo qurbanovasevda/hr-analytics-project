@@ -1,0 +1,211 @@
+﻿create table Education(
+             EducationLevelID number primary key,
+             EducationLevel varchar2(50)
+);
+
+select * from Education for update
+
+
+
+
+
+create table Employeee(
+             EmployeeID varchar2(20) primary key,
+             FirstName varchar2(25),
+             LastName varchar2(50),
+             Gender varchar2(20),
+             Age number,
+             BusinessTravel varchar2(20),
+             Department varchar2(25),
+             DistanceFromHomeKM number,
+             State varchar2(5),
+             Ethnicity varchar2(50),
+             Education number,
+             EducationField varchar2(30),
+             JobRole varchar2(50),
+             MaritalStatus varchar2(10),
+             Salary number,
+             StockOptionLevel number,
+             OverTime varchar2(5),
+             HireDate date,
+             Attrition varchar2(5),
+             YearsAtCompany number,
+             YearsInMostRecentRole number,
+             YearsSinceLastPromotion number,
+             YearsWithCurrManager number
+);
+
+select * from Employeee for update;
+
+
+--2.Hər EducationLevel-də təhsil alan tələbələrin sayını tapmaq 
+select EducationLevel, count(*) as count_of_educationlevel from Employeee emp 
+join Education ed on emp.Education=ed.educationlevelid
+group by EducationLevel
+
+
+--3.Tələbənin adı,soyadı bir sütunda Full Name Aliası ilə çıxmalı, digər sütunlarda education Level-i,Doğum tarixi və Maaşı çıxmalıdır 
+select emp.firstname || ' ' || emp.lastname as FullName,ed.educationlevel,emp.age,emp.salary from Employeee emp
+join Education ed on emp.Education=ed.educationlevelid
+
+--4.Job Role-larda işçilərə görə ən çox 3 Job Role növünü təyin etmək. Job Role və Employee Count çıxmalı 
+select emp.jobrole,count(*) from Employeee emp
+group by emp.jobrole
+order by count(*) desc
+fetch first 3 rows only
+
+
+--5.Hər Departamentdəki ən yüksək maaşı və departament adını ekrana çıxartmaq 
+select emp.department,max(emp.salary) as max_salary from Employeee emp
+group by emp.department
+
+--6. Hər Departamentə görə maaş ortalamasını ekrana çıxartmaq 
+select emp.department,avg(emp.salary) as avg_salary from Employeee emp
+group by emp.department
+
+--7.Hər işçinin adını,maaşını və işə götürülmə tarixindən(Hire Date) bü günədək neçə aydır ki, həmin şirkətda çalışır ay sayını ekrana çıxartmaq 
+select emp.firstname,emp.salary,trunc(Months_between(sysdate,emp.hiredate)) from Employeee emp
+
+--8.Bütün işçilərin adının sonuna soyadındajı simvolların sayı qədər “*”- simvolunu əlavə etmək və  
+--Distance From Home sütunundakı məlumatın sonuna KM əlavə edərək ekrana çıxartmaq 
+select rpad(emp.firstname ,length(emp.firstname)+length(emp.lastname),'*') 
+as firstname_ulduz,emp.distancefromhomekm || 'KM' as distance_km from Employeee emp
+
+--9.Hər Departamentdə neçə fərqli job role-u olan işçi çalışır sayı tapmaq 
+select emp.department, count(distinct(emp.jobrole)) as count_of_distinct_jrole from Employeee emp
+group by emp.department
+
+--10.Evdən olan məsafəsi maksimal olan ilk 10 işçinin siyahısını çıxartmaq :məsafə,ad,soyad,martial status ekrana çıxmalı 
+select emp.distancefromhomekm,emp.firstname,emp.lastname,emp.maritalstatus from Employeee emp
+order by emp.distancefromhomekm desc 
+fetch first 10 rows only
+
+--11.Employee Tablesində olan siyahının ilk 50%-ni ekrana çıxardan sorğu yazmaq 
+select * from Employeee 
+fetch first 50 percent rows only
+
+--12.Employee Tablesində hər employee-ə görə pseudoColumnları tapmaq 
+select rowid,rownum,sysdate,emp.*
+from Employeee emp;
+
+--13.Şirkətdə ən uzun müddətli çalışan top 10 işçinin ad soyadı və bu gündən etibarən neçə ildir burada çalışdığını tapmaq
+select emp.firstname,emp.lastname,trunc(months_between(sysdate,emp.hiredate)/12) as YearsWorked from Employeee emp
+order by emp.hiredate
+fetch first 10 rows only
+
+------------------------------------------------------------------------------------------------------------------------------
+
+-- 1.Job Role-larda işçilərə görə ən çox 3 Job Role növünü təyin etmək. Job Role və Employee Count çıxmalı
+select emp.jobrole,count(*) from Employeee emp
+group by emp.jobrole
+order by count(*) desc
+fetch first 3 rows only
+
+--2.Şirkətdə ən uzun müddətli çalışan top 10 işçinin ad soyadı və bu gündən etibarən neçə ildir burada çalışdığını tapmaq
+ select emp.firstname,emp.lastname,trunc(months_between(sysdate,emp.hiredate)/12) as YearsWorked from Employeee emp
+order by emp.hiredate
+fetch first 10 rows only
+
+
+ --3.Bütün işçilərin adının sonuna soyadındakı simvolların sayı qədər “*”- simvolunu əlavə etmək və 
+ --DistanceFromHome sütunundakı məlumatın sonuna KM əlavə edərək ekrana çıxartmaq
+select rpad(emp.firstname ,length(emp.firstname)+length(emp.lastname),'*') 
+as firstname_ulduz,emp.distancefromhomekm || 'KM' as distance_km from Employeee emp
+
+
+--4.Ən yüksək və ən az maaş alan işçilərin təhsil səviyələrini çıxaran sorğu yazın.
+select emp.firstname,emp.lastname,ed.EducationLevel,emp.salary from Employeee emp 
+join Education ed on emp.Education=ed.educationlevelid
+where emp.salary=(select max(emp.salary) from Employeee emp)  
+or emp.Salary=(select min(emp.Salary) from Employeeee emp) 
+
+
+--5.Təhsil səviyəsi artan sıra ilə olmaqla hər işçinin bir əvvəlki işçi ilə maaş fərqini tapın.
+select 
+    emp.firstname,
+    emp.lastname,
+    ed.educationlevel,
+    emp.salary,
+    LAG(emp.salary) OVER (PARTITION BY ed.educationlevel order by emp.salary),
+    emp.salary - LAG(emp.salary) OVER (PARTITION BY ed.educationlevel order by emp.salary) as salary_difference
+from employeee emp
+join education ed on emp.education = ed.educationlevelid
+order by ed.educationlevel, emp.salary;
+
+--6. Əməkdaşların evdən iş yerinə ən uzaq məsafəni qət edənlərini tapın və onlarla bağlı məlumatları göstərin.
+select * from Employeee emp
+where emp.distancefromhomekm=(select max(emp.distancefromhomekm) from Employeee emp)
+
+
+--7. Orta yaş və orta maaşdan yuxarı olan əməkdaşları tapın.
+select * from Employeee emp
+where emp.age>=(select avg(emp.age) from Employeee emp) and
+emp.salary>=(select avg(emp.salary) from Employeee emp)
+
+
+--8. Təhsil Səviyyəsinə və Təhsil Sahəsinə Görə Cinsiyyətin Paylanması
+select ed.educationlevel,emp.educationfield,emp.gender,count(*)
+from Employeee emp join Education ed
+on emp.education=ed.educationlevelid
+group by ed.educationlevel,emp.educationfield,emp.gender
+order by ed.educationlevel,emp.educationfield,emp.gender
+
+
+ --9. Hər təhsil səviyyəsi üçün əməkdaşların illik maaş artımını və şirkətdəki ortalama iş müddətini tapın.
+select ed.educationlevel,avg(emp.salary),avg(emp.YearsAtCompany) as AvgYearsAtCompany  -------ILLIK MAAS ARTIMI????
+from Employeee emp join Education ed
+on emp.education=ed.educationlevelid
+group by ed.educationlevel
+
+
+--10. Hər bir departamentdə əməkdaşların şirkətdən çıxma nisbətini tapın (ATTRITION "Yes" olan əməkdaşlar).
+select  
+    emp.Department,
+    count(case when emp.Attrition='Yes' then 1 end) as Quitters,
+    count(*) as TotalEmployees,
+    round(count(case when emp.Attrition='Yes' then 1 end)*100 / count(*)) || '%' as AttritionRate_Percent
+from Employeee emp
+group by emp.department
+order by AttritionRate_Percent desc;
+
+
+
+--11. Hər təhsil səviyyəsi üçün orta maaşı ötən əməkdaşların siyahısını əldə edin.
+select emp.firstname, emp.lastname, emp.salary, ed.educationlevel
+from employeee emp join education ed 
+on emp.education = ed.educationlevelid
+where emp.salary>(
+    select avg(emp2.salary)
+    from employeee emp2
+    join education ed2 on emp2.education = ed2.educationlevelid
+    where ed2.educationlevel=ed.educationlevel
+)
+order by ed.educationlevel, emp.salary desc;
+
+--12. 3 ildən az təcrübəsi olan, amma şirkətdə orta maaşdan çox qazanan əməkdaşları göstərin.
+select * from Employeee emp
+where emp.YearsAtCompany<3
+and emp.salary>(
+    select avg(emp.salary)
+    from Employeee emp
+);
+
+--13. Hər bir təhsil səviyyəsi və iş roluna görə əməkhaqqına görə ən yüksək 5 əməkdaşı seçin.
+select 
+* from (
+    select 
+        ed.EducationLevel,
+        emp.JobRole,
+        emp.FirstName,
+        emp.LastName,
+        emp.Salary,
+        row_number() over(
+            partition by ed.EducationLevel, emp.JobRole 
+            order by emp.Salary desc
+        ) as rn
+    from Employeee emp
+    join Education ed on emp.Education = ed.EducationLevelID
+) sub
+where rn <= 5
+order by EducationLevel, JobRole, Salary desc;
+
