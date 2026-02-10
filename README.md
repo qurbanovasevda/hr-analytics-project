@@ -1,17 +1,17 @@
 # Mega Datum HR Analytics Project
 
-## 📌 Project Overview
+## Project Overview
 
 This project analyzes employee data for Mega Datum to uncover key HR metrics, workforce demographics, employee performance, and attrition patterns. The objective is to generate data-driven insights that help improve employee retention and optimize organizational performance.
 
-## 🎯 Business Objectives
+## Business Objectives
 
 * Monitor overall workforce metrics and employee attrition
 * Identify key factors contributing to employee turnover
 * Analyze employee performance across departments
 * Support strategic HR decision-making with actionable insights
 
-## 🛠️ Tools & Technologies
+## Tools & Technologies
 
 * **Power BI** – Interactive dashboards and KPI tracking
 * **Python** – Exploratory data analysis and visualization
@@ -19,7 +19,7 @@ This project analyzes employee data for Mega Datum to uncover key HR metrics, wo
 
 ---
 
-## 📊 Power BI Analysis
+## Power BI Analysis
 
 Developed a comprehensive HR dashboard highlighting workforce trends and performance indicators.
 
@@ -44,7 +44,7 @@ Developed a comprehensive HR dashboard highlighting workforce trends and perform
 
 ---
 
-## 🐍 Python Analysis
+## Python Analysis
 
 Performed exploratory data analysis (EDA) to better understand employee behavior and organizational dynamics.
 
@@ -64,7 +64,7 @@ Performed exploratory data analysis (EDA) to better understand employee behavior
 
 ---
 
-## 🗄️ SQL Analysis
+## SQL Analysis
 
 Used SQL to extract insights and answer complex workforce questions.
 
@@ -83,7 +83,7 @@ Used SQL to extract insights and answer complex workforce questions.
 
 ---
 
-## 📈 Key Outcomes
+## Key Outcomes
 
 * Built an end-to-end HR analytics solution combining SQL, Python, and Power BI
 * Identified major factors influencing employee attrition
@@ -92,16 +92,16 @@ Used SQL to extract insights and answer complex workforce questions.
 
 ---
 
-## 📷 Dashboard Preview
+## Dashboard Preview
 
 *Add dashboard screenshots here.*
 
-## 📂 Dataset
+## Dataset
 
 Dataset includes employee records, education data, satisfaction metrics, and performance ratings.
 *(Add dataset link if publicly available.)*
 
-## 🚀 How to Run the Project
+## How to Run the Project
 
 1. Run SQL queries to prepare the dataset
 2. Perform exploratory analysis using Python
@@ -109,6 +109,6 @@ Dataset includes employee records, education data, satisfaction metrics, and per
 
 ---
 
-## 👤 Author
+## Author
 
 Sevda Qurbanova – Aspiring Data Analyst
